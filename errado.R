@@ -1,6 +1,9 @@
 library(readr)
 library(tidyverse)
 library(xts)
+library(tseries)
+library(fPortfolio)
+
 all_coins_resume <- read_csv("all-coins-resume.csv")
 binance <- read_csv("binance-usd-rates.csv")
 dai <- read_csv("dai-rates.csv")
@@ -38,3 +41,21 @@ usdc <- xts(usdc, order.by = data$usdc)
 usdp <- xts(usdp, order.by = data$usdp)
 usdt <- xts(usdt, order.by = data$usdt)
 coins <- list(binance, dai, gemini, susd,  tusd ,usdc, usdp, usdt)
+names(coins) <- names
+
+returns <- xts()
+for (i in names) {
+  returns <- merge(returns, coins[[i]]$variableBorrowRate_avg, all = T)
+}
+names(returns) <- names
+
+markowitz.base1 <- returns[complete.cases(returns[,1:6]),1:6]
+markowitz.base1 <- as.timeSeries(markowitz.base1)
+
+markowitz1.tangency <- tangencyPortfolio(markowitz.base1, spec = portfolioSpec())
+
+markowitz1.minvar <- minvariancePortfolio(markowitz.base1, spec = portfolioSpec())
+
+markowitz1.frontier <- portfolioFrontier(markowitz.base1, spec = portfolioSpec())
+
+plot(markowitz1.frontier,c(1,2,3))
