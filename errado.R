@@ -49,6 +49,7 @@ for (i in names) {
 }
 names(returns) <- names
 
+## Portfolios so c 6 moedas (as que tem dado ha mais tempo)
 markowitz.base1 <- returns[complete.cases(returns[,1:6]),1:6]
 markowitz.base1 <- as.timeSeries(markowitz.base1)
 
@@ -59,3 +60,15 @@ markowitz1.minvar <- minvariancePortfolio(markowitz.base1, spec = portfolioSpec(
 markowitz1.frontier <- portfolioFrontier(markowitz.base1, spec = portfolioSpec())
 
 plot(markowitz1.frontier,c(1,2,3))
+
+##Portfolios com as 8 moedas
+
+markowitz.base2 <- returns[complete.cases(returns[,1:8]),1:8]
+markowitz.base2 <- as.timeSeries(markowitz.base2)
+
+markowitz2.tangency <- tangencyPortfolio(markowitz.base2)
+markowitz2.minvar <- minvariancePortfolio(markowitz.base2, spec = portfolioSpec())
+markowitz2.frontier <- portfolioFrontier(markowitz.base2, spec = portfolioSpec())
+
+plot(markowitz2.frontier,c(1,2,3))
+
